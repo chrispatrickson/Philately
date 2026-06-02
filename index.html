@@ -1,13 +1,259 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Postcard Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0eb;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --text-muted: #777;
+      --border: rgba(0,0,0,0.1);
+      --accent: #3a3a3a;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 2.5rem 2rem 1.5rem;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ── Nav breadcrumb ── */
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      min-height: 44px;
+    }
+
+    .nav .back-btn {
+      background: none;
+      border: 0.5px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 0.82rem;
+      font-family: 'Lato', sans-serif;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav .back-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── Theme grid ── */
+    #home-view {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      padding: 0.5rem 2rem 3rem;
+    }
+
+    .theme-box {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .theme-box:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
+
+    .theme-box .theme-emoji { font-size: 3rem; display: block; margin-bottom: 1rem; }
+
+    .theme-box .theme-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 0.3rem;
+    }
+
+    .theme-box .theme-count { font-size: 0.82rem; color: var(--text-muted); }
+
+    /* ── Postcard grid ── */
+    #theme-view {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 0.5rem 2rem 3rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+
+    .card img {
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
+      display: block;
+      background: #e8e0d8;
+    }
+
+    .card-body { padding: 0.75rem 1rem; }
+    .card-title { font-size: 0.88rem; font-weight: 400; margin-bottom: 0.15rem; }
+    .card-meta { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ── States ── */
+    .hidden { display: none !important; }
+
+    .empty-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      padding: 3rem 0;
+    }
+
+    /* ── Loading ── */
+    #loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>My Postcard Collection</h1>
-  <p>Coming soon!</p>
+
+  <header>
+    <h1>My Postcard Collection</h1>
+    <p id="header-sub">Choose a theme to explore</p>
+  </header>
+
+  <div class="nav" id="nav-bar">
+    <button class="back-btn hidden" id="back-btn" onclick="showHome()">← All themes</button>
+    <span id="nav-label"></span>
+  </div>
+
+  <div id="loading">Loading postcards…</div>
+
+  <div id="home-view" class="hidden"></div>
+  <div id="theme-view" class="hidden"></div>
+
+  <script>
+    let allPostcards = [];
+
+    // Theme display config — add an emoji and description for each theme name
+    const themeConfig = {
+      "Amphibians":      { emoji: "🐸", description: "Frogs, salamanders & more" },
+      "Pokémon":         { emoji: "⚡", description: "Gotta collect 'em all" },
+      "World Traveller": { emoji: "🌍", description: "Scenes from around the globe" },
+    };
+
+    // Fallback emoji for themes not listed above
+    function themeEmoji(name) {
+      return themeConfig[name] ? themeConfig[name].emoji : "📬";
+    }
+
+    function themeDescription(name) {
+      return themeConfig[name] ? themeConfig[name].description : "";
+    }
+
+    // ── Render home screen ──
+    function showHome() {
+      document.getElementById('theme-view').classList.add('hidden');
+      document.getElementById('home-view').classList.remove('hidden');
+      document.getElementById('back-btn').classList.add('hidden');
+      document.getElementById('header-sub').textContent = "Choose a theme to explore";
+      document.getElementById('nav-label').textContent = "";
+      document.title = "My Postcard Collection";
+    }
+
+    function buildHome() {
+      const themes = [...new Set(allPostcards.map(p => p.theme))];
+      const homeView = document.getElementById('home-view');
+
+      homeView.innerHTML = themes.map(theme => {
+        const count = allPostcards.filter(p => p.theme === theme).length;
+        return `
+          <div class="theme-box" onclick="showTheme('${theme.replace(/'/g, "\\'")}')">
+            <span class="theme-emoji">${themeEmoji(theme)}</span>
+            <div class="theme-name">${theme}</div>
+            <div class="theme-count">${count} postcard${count !== 1 ? 's' : ''}</div>
+          </div>`;
+      }).join('');
+    }
+
+    // ── Render theme screen ──
+    function showTheme(theme) {
+      const filtered = allPostcards.filter(p => p.theme === theme);
+
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('theme-view').classList.remove('hidden');
+      document.getElementById('back-btn').classList.remove('hidden');
+      document.getElementById('header-sub').textContent = `${filtered.length} postcard${filtered.length !== 1 ? 's' : ''}`;
+      document.getElementById('nav-label').textContent = theme;
+      document.title = `${theme} — My Postcard Collection`;
+
+      const themeView = document.getElementById('theme-view');
+
+      if (filtered.length === 0) {
+        themeView.innerHTML = '<p class="empty-msg">No postcards in this theme yet.</p>';
+        return;
+      }
+
+      themeView.innerHTML = filtered.map(p => `
+        <div class="card">
+          <img src="${p.image}" alt="${p.title}" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">${p.title}</div>
+            <div class="card-meta">${p.year || ''}</div>
+          </div>
+        </div>`).join('');
+    }
+
+    // ── Load data ──
+    fetch('postcards.json')
+      .then(r => r.json())
+      .then(data => {
+        allPostcards = data;
+        document.getElementById('loading').classList.add('hidden');
+        buildHome();
+        showHome();
+      })
+      .catch(() => {
+        document.getElementById('loading').textContent =
+          "Couldn't load postcards.json — make sure the file exists in your repository.";
+      });
+  </script>
+
 </body>
 </html>
-<img src="image.jpg" alt="Let's Dance 12">
-<img src="image (1).jpg" alt="Pokémon Astronomical Observatory">
-<img src="image (2).jpg" alt="Pokémon Astronomical Observatory 2">
