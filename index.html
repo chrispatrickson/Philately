@@ -149,6 +149,57 @@
       color: var(--text-muted);
       font-size: 0.9rem;
     }
+
+    /* ── Lightbox ── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      cursor: zoom-out;
+    }
+
+    #lightbox.open { display: flex; }
+
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      cursor: default;
+    }
+
+    #lightbox-caption {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.85);
+      font-size: 0.85rem;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #lightbox-close {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      font-size: 1.75rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    #lightbox-close:hover { color: #fff; }
+
+    .card { cursor: zoom-in; }
   </style>
 </head>
 <body>
@@ -164,6 +215,13 @@
   </div>
 
   <div id="loading">Loading postcards…</div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" onclick="closeLightbox()">
+    <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+    <div id="lightbox-caption"></div>
+  </div>
 
   <div id="home-view" class="hidden"></div>
   <div id="theme-view" class="hidden"></div>
@@ -231,7 +289,7 @@
       }
 
       themeView.innerHTML = filtered.map(p => `
-        <div class="card">
+        <div class="card" onclick="openLightbox('${p.image.replace(/'/g, "\\'")}', '${p.title.replace(/'/g, "\\'")}', '${(p.year || '').replace(/'/g, "\\'")}')">
           <img src="${p.image}" alt="${p.title}" loading="lazy">
           <div class="card-body">
             <div class="card-title">${p.title}</div>
@@ -239,6 +297,25 @@
           </div>
         </div>`).join('');
     }
+
+    // ── Lightbox ──
+    function openLightbox(src, title, year) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-img').alt = title;
+      document.getElementById('lightbox-caption').textContent = year ? `${title} — ${year}` : title;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.getElementById('lightbox-img').src = '';
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
 
     // ── Load data ──
     fetch('postcards.json')
