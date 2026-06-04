@@ -166,5 +166,11 @@
     "theme": "Pokémon",
     "year": "2026",
     "image": "images/nhm12.jpg"
+  },
+  {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog.jpg"
   }
 ]
