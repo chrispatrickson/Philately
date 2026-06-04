@@ -168,6 +168,24 @@
     "image": "images/nhm12.jpg"
   },
   {
+    "title": "Blastoise",
+    "theme": "Pokémon",
+    "year": "2000",
+    "image": "images/blastoise.jpg"
+  },
+  {
+    "title": "Gengar",
+    "theme": "Pokémon",
+    "year": "2000",
+    "image": "images/gengar.jpg"
+  },
+  {
+    "title": "Ditto",
+    "theme": "Pokémon",
+    "year": "2000",
+    "image": "images/ditto.jpg"
+  },
+  {
     "title": "Common Frog",
     "theme": "Frogs",
     "year": "2025",
