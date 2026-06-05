@@ -5,6 +5,42 @@
     "year": "1998",
     "image": "images/banpresto96.jpg"
   },
+    {
+    "title": "Fudin (Alakazam)",
+    "theme": "Pokémon",
+    "year": "1998",
+    "image": "images/fudin.jpg"
+  },
+     {
+    "title": "Pikachu & Friends - Merry Christmas",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/paf-merry-christmas.jpg"
+  },
+    {
+    "title": "Pikachu & Friends - Happy New Year 1999",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/paf-hny.jpg"
+  },
+    {
+    "title": "Pikachu & Friends - Happy New Year 1999",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/paf-hny2.jpg"
+  },
+        {
+    "title": "Pikachu & Friends - Happy New Year 1999",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/paf-hny3.jpg"
+  },
+        {
+    "title": "Let's Dance 5",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/lets-dance-5.jpg"
+  },
   {
     "title": "Let's Dance 11",
     "theme": "Pokémon",
@@ -16,6 +52,12 @@
     "theme": "Pokémon",
     "year": "1999",
     "image": "images/lets-dance-12.jpg"
+  },
+    {
+    "title": "Let's Dance 14",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/lets-dance-14.jpg"
   },
     {
     "title": "Blastoise",
@@ -47,7 +89,55 @@
     "year": "2003",
     "image": "images/jirachi-wish-maker-movie-promotion-2.jpg"
   },
+    {
+    "title": "Pokémon Peace Jet ANA",
+    "theme": "Pokémon",
+    "year": "2011",
+    "image": "images/pokemon-peace-jet-ana.jpg"
+  },
      {
+    "title": "Eevee - Happy Party Time",
+    "theme": "Pokémon",
+    "year": "2013",
+    "image": "images/hpt2013.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2016",
+    "image": "images/pco2016.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2017",
+    "image": "images/pco2017.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2018",
+    "image": "images/pco2018.jpg"
+  },
+     {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2018",
+    "image": "images/pco20182.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2019",
+    "image": "images/pco2019.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2021",
+    "image": "images/pco2021.jpg"
+  },
+    {
     "title": "London World Championship 2022",
     "theme": "Pokémon",
     "year": "2022",
@@ -88,12 +178,6 @@
     "theme": "Pokémon",
     "year": "2023",
     "image": "images/vg6.jpg"
-  },
-  {
-    "title": "Pokémon Peace Jet ANA",
-    "theme": "Pokémon",
-    "year": "2011",
-    "image": "images/pokemon-peace-jet-ana.jpg"
   },
   {
     "title": "Pokopia Launch",
@@ -196,6 +280,18 @@
     "theme": "Pokémon",
     "year": "2026",
     "image": "images/nhm12.jpg"
+  },
+    {
+    "title": "Pokémon Fossil Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/fossil-museum-1.jpg"
+  },
+      {
+    "title": "Pokémon Fossil Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/fossil-museum-2.jpg"
   },
   {
     "title": "Common Frog",
