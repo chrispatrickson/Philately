@@ -49,18 +49,20 @@
     }
 
     .about-link {
-      font-size: 0.85rem;
+      font-size: 1.1rem;
       color: var(--text-muted);
       text-decoration: none;
       border: 0.5px solid var(--border);
       border-radius: 999px;
-      padding: 6px 16px;
+      padding: 8px 20px;
       white-space: nowrap;
       margin-top: 0.25rem;
       transition: background 0.15s, color 0.15s;
     }
 
     .about-link:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+
 
     /* ── Nav breadcrumb ── */
     .nav {
@@ -228,9 +230,8 @@
   <header>
     <div>
       <h1>Dr Eel's Postcard Collection</h1>
-      <p id="header-sub">Choose a theme to explore</p>
     </div>
-    <a href="about.html" class="about-link">🏠 Home</a>
+    <a href="about.html" class="about-link">🏠 About</a>
   </header>
 
   <div class="nav" id="nav-bar">
@@ -278,7 +279,6 @@
       document.getElementById('theme-view').classList.add('hidden');
       document.getElementById('home-view').classList.remove('hidden');
       document.getElementById('back-btn').classList.add('hidden');
-      document.getElementById('header-sub').textContent = "Choose a theme to explore";
       document.getElementById('nav-label').textContent = "";
       document.title = "Dr Eel's Postcard Collection";
     }
@@ -305,7 +305,6 @@
       document.getElementById('home-view').classList.add('hidden');
       document.getElementById('theme-view').classList.remove('hidden');
       document.getElementById('back-btn').classList.remove('hidden');
-      document.getElementById('header-sub').textContent = `${filtered.length} postcard${filtered.length !== 1 ? 's' : ''}`;
       document.getElementById('nav-label').textContent = theme;
       document.title = `${theme} — My Postcard Collection`;
 
