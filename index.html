@@ -230,7 +230,7 @@
       <h1>Dr Eel's Postcard Collection</h1>
       <p id="header-sub">Choose a theme to explore</p>
     </div>
-    <a href="about.html" class="about-link">About</a>
+    <a href="about.html" class="about-link">🏠 Home</a>
   </header>
 
   <div class="nav" id="nav-bar">
@@ -352,7 +352,13 @@
         allPostcards = data;
         document.getElementById('loading').classList.add('hidden');
         buildHome();
-        showHome();
+        // Check if a theme was requested via URL hash
+        const hash = decodeURIComponent(window.location.hash.slice(1));
+        if (hash && allPostcards.some(p => p.theme === hash)) {
+          showTheme(hash);
+        } else {
+          showHome();
+        }
       })
       .catch(() => {
         document.getElementById('loading').textContent =
