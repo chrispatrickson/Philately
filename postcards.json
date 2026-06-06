@@ -287,12 +287,48 @@
     "year": "2026",
     "image": "images/fossil-museum-1.jpg"
   },
-      {
+    {
     "title": "Pokémon Fossil Museum",
     "theme": "Pokémon",
     "year": "2026",
     "image": "images/fossil-museum-2.jpg"
   },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog25.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog26.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog27.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog28.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog29.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog30.jpg"
+  }
   {
     "title": "Common Frog",
     "theme": "Frogs",
@@ -436,41 +472,5 @@
     "theme": "Frogs",
     "year": "2025",
     "image": "images/frog24.jpg"
-  },
-    {
-    "title": "Common Frog",
-    "theme": "Frogs",
-    "year": "2025",
-    "image": "images/frog25.jpg"
-  },
-    {
-    "title": "Common Frog",
-    "theme": "Frogs",
-    "year": "2025",
-    "image": "images/frog26.jpg"
-  },
-    {
-    "title": "Common Frog",
-    "theme": "Frogs",
-    "year": "2025",
-    "image": "images/frog27.jpg"
-  },
-    {
-    "title": "Common Frog",
-    "theme": "Frogs",
-    "year": "2025",
-    "image": "images/frog28.jpg"
-  },
-    {
-    "title": "Common Frog",
-    "theme": "Frogs",
-    "year": "2025",
-    "image": "images/frog29.jpg"
-  },
-    {
-    "title": "Common Frog",
-    "theme": "Frogs",
-    "year": "2025",
-    "image": "images/frog30.jpg"
   }
 ]
