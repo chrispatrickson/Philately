@@ -220,9 +220,28 @@
       line-height: 1;
     }
 
-    #lightbox-close:hover { color: #fff; }
+    .lightbox-arrow {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      z-index: 1001;
+    }
 
-    .card { cursor: zoom-in; }
+    .lightbox-arrow:hover { background: rgba(255,255,255,0.3); }
+    #lightbox-prev { left: 1.25rem; }
+    #lightbox-next { right: 1.25rem; }
   </style>
 </head>
 <body>
@@ -244,7 +263,9 @@
   <!-- Lightbox -->
   <div id="lightbox" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+    <button class="lightbox-arrow" id="lightbox-prev" onclick="event.stopPropagation(); navigateLightbox(-1)">‹</button>
     <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+    <button class="lightbox-arrow" id="lightbox-next" onclick="event.stopPropagation(); navigateLightbox(1)">›</button>
     <div id="lightbox-caption"></div>
   </div>
 
@@ -301,12 +322,13 @@
     // ── Render theme screen ──
     function showTheme(theme) {
       const filtered = allPostcards.filter(p => p.theme === theme);
+      currentThemeCards = filtered;
 
       document.getElementById('home-view').classList.add('hidden');
       document.getElementById('theme-view').classList.remove('hidden');
       document.getElementById('back-btn').classList.remove('hidden');
       document.getElementById('nav-label').textContent = theme;
-      document.title = `${theme} — My Postcard Collection`;
+      document.title = `${theme} — Dr Eel's Postcard Collection`;
 
       const themeView = document.getElementById('theme-view');
 
@@ -315,8 +337,8 @@
         return;
       }
 
-      themeView.innerHTML = filtered.map(p => `
-        <div class="card" onclick="openLightbox('${p.image.replace(/'/g, "\\'")}', '${p.title.replace(/'/g, "\\'")}', '${(p.year || '').replace(/'/g, "\\'")}')">
+      themeView.innerHTML = filtered.map((p, i) => `
+        <div class="card" onclick="openLightbox('${p.image.replace(/'/g, "\\'")}', '${p.title.replace(/'/g, "\\'")}', '${(p.year || '').replace(/'/g, "\\'")}', ${i})">
           <img src="${p.image}" alt="${p.title}" loading="lazy">
           <div class="card-body">
             <div class="card-title">${p.title}</div>
@@ -326,12 +348,26 @@
     }
 
     // ── Lightbox ──
-    function openLightbox(src, title, year) {
-      document.getElementById('lightbox-img').src = src;
-      document.getElementById('lightbox-img').alt = title;
-      document.getElementById('lightbox-caption').textContent = year ? `${title} — ${year}` : title;
+    let currentThemeCards = [];
+    let currentCardIndex = 0;
+
+    function openLightbox(src, title, year, index) {
+      currentCardIndex = index;
+      showLightboxCard(currentCardIndex);
       document.getElementById('lightbox').classList.add('open');
       document.body.style.overflow = 'hidden';
+    }
+
+    function showLightboxCard(index) {
+      const p = currentThemeCards[index];
+      document.getElementById('lightbox-img').src = p.image;
+      document.getElementById('lightbox-img').alt = p.title;
+      document.getElementById('lightbox-caption').textContent = p.year ? `${p.title} — ${p.year}` : p.title;
+    }
+
+    function navigateLightbox(direction) {
+      currentCardIndex = (currentCardIndex + direction + currentThemeCards.length) % currentThemeCards.length;
+      showLightboxCard(currentCardIndex);
     }
 
     function closeLightbox() {
@@ -342,6 +378,8 @@
 
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') navigateLightbox(1);
+      if (e.key === 'ArrowLeft') navigateLightbox(-1);
     });
 
     // ── Load data ──
