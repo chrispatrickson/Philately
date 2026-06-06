@@ -293,6 +293,12 @@
     "year": "2026",
     "image": "images/fossil-museum-2.jpg"
   },
+  {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog23.jpg"
+  },
     {
     "title": "Common Frog",
     "theme": "Frogs",
@@ -460,12 +466,6 @@
     "theme": "Frogs",
     "year": "2025",
     "image": "images/frog22.jpg"
-  },
-    {
-    "title": "Common Frog",
-    "theme": "Frogs",
-    "year": "2025",
-    "image": "images/frog23.jpg"
   },
     {
     "title": "Common Frog",
