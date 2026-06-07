@@ -435,6 +435,12 @@
     "title": "Common Frog",
     "theme": "Frogs",
     "year": "2025",
+    "image": "images/frog3.jpeg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
     "image": "images/frog32.jpg"
   },
     {
@@ -442,12 +448,6 @@
     "theme": "Frogs",
     "year": "2025",
     "image": "images/frog2.jpeg"
-  },
-    {
-    "title": "Common Frog",
-    "theme": "Frogs",
-    "year": "2025",
-    "image": "images/frog3.jpeg"
   },
     {
     "title": "Common Frog",
