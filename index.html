@@ -277,16 +277,16 @@
 
     // Theme display config — add an emoji and description for each theme name
     const themeConfig = {
-      "Frogs":    { emoji: "🐸", color: "#4a7c59", hover: "#edf5f0" },
+      "Frogs":    { emoji: "🐸" },
       "Pokémon":  { svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="48" fill="#fff" stroke="#222" stroke-width="4"/>
         <path d="M2 50 Q2 2 50 2 Q98 2 98 50Z" fill="#e53935"/>
         <rect x="2" y="47" width="96" height="6" fill="#222"/>
         <circle cx="50" cy="50" r="14" fill="#fff" stroke="#222" stroke-width="4"/>
         <circle cx="50" cy="50" r="7" fill="#fff" stroke="#222" stroke-width="3"/>
-      </svg>`, color: "#e6a817", hover: "#fffbef" },
-      "Mushrooms": { emoji: "🍄", color: "#9b4f2e", hover: "#fdf2ee" },
-      "World Traveller Series": { emoji: "🌎", color: "#2e6fa3", hover: "#eef4fb" },
+      </svg>` },
+      "Mushrooms": { emoji: "🍄" },
+      "World Traveller Series": { emoji: "🌎" },
     };
 
     function themeIcon(name) {
@@ -311,15 +311,8 @@
 
       homeView.innerHTML = themes.map(theme => {
         const count = allPostcards.filter(p => p.theme === theme).length;
-        const cfg = themeConfig[theme] || {};
-        const color = cfg.color || '#3a3a3a';
-        const hover = cfg.hover || '#f5f5f5';
         return `
-          <div class="theme-box"
-            style="border-top: 3px solid ${color};"
-            onmouseover="this.style.background='${hover}'"
-            onmouseout="this.style.background=''"
-            onclick="showTheme('${theme.replace(/'/g, "\\'")}')">
+          <div class="theme-box" onclick="showTheme('${theme.replace(/'/g, "\\'")}')">
             ${themeIcon(theme)}
             <div class="theme-name">${theme}</div>
             <div class="theme-count">${count} postcard${count !== 1 ? 's' : ''}</div>
