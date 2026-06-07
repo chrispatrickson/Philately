@@ -1,410 +1,482 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dr Eel's Postcard Collection</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #f5f0eb;
-      --surface: #ffffff;
-      --text: #1a1a1a;
-      --text-muted: #777;
-      --border: rgba(0,0,0,0.1);
-      --accent: #3a3a3a;
-      --radius: 12px;
-    }
-
-    body {
-      font-family: 'Lato', sans-serif;
-      font-weight: 300;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* ── Header ── */
-    header {
-      padding: 2.5rem 2rem 1.5rem;
-      border-bottom: 0.5px solid var(--border);
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-    }
-
-    header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      font-weight: 400;
-      letter-spacing: 0.01em;
-    }
-
-    header p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-top: 0.3rem;
-    }
-
-    .about-link {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      border: 0.5px solid var(--border);
-      border-radius: 999px;
-      padding: 8px 20px;
-      white-space: nowrap;
-      margin-top: 0.25rem;
-      transition: background 0.15s, color 0.15s;
-    }
-
-    .about-link:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-
-
-    /* ── Nav breadcrumb ── */
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 1rem 2rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      min-height: 44px;
-    }
-
-    .nav .back-btn {
-      background: none;
-      border: 0.5px solid var(--border);
-      border-radius: 999px;
-      padding: 5px 14px;
-      font-size: 0.82rem;
-      font-family: 'Lato', sans-serif;
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: background 0.15s, color 0.15s;
-    }
-
-    .nav .back-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-    /* ── Theme grid ── */
-    #home-view {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
-      padding: 0.5rem 2rem 3rem;
-    }
-
-    .theme-box {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2.5rem 1.5rem 2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-
-    .theme-box:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
-
-    .theme-box .theme-emoji { font-size: 3rem; display: block; margin-bottom: 1rem; }
-
-    /* ── Pokéball ── */
-    .pokeball { width: 56px; height: 56px; margin: 0 auto 1rem; }
-    .pokeball svg { width: 100%; height: 100%; }
-
-    .theme-box .theme-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
-      font-weight: 400;
-      margin-bottom: 0.3rem;
-    }
-
-    .theme-box .theme-count { font-size: 0.82rem; color: var(--text-muted); }
-
-    /* ── Postcard grid ── */
-    #theme-view {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-      padding: 0.5rem 2rem 3rem;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-
-    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
-
-    .card img {
-      width: 100%;
-      aspect-ratio: 3 / 2;
-      object-fit: cover;
-      display: block;
-      background: #e8e0d8;
-    }
-
-    .card-body { padding: 0.75rem 1rem; }
-    .card-title { font-size: 0.88rem; font-weight: 400; margin-bottom: 0.15rem; }
-    .card-meta { font-size: 0.78rem; color: var(--text-muted); }
-
-    /* ── States ── */
-    .hidden { display: none !important; }
-
-    .empty-msg {
-      grid-column: 1 / -1;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      padding: 3rem 0;
-    }
-
-    /* ── Loading ── */
-    #loading {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    /* ── Lightbox ── */
-    #lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      cursor: zoom-out;
-    }
-
-    #lightbox.open { display: flex; }
-
-    #lightbox img {
-      max-width: 90vw;
-      max-height: 85vh;
-      object-fit: contain;
-      border-radius: 6px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      cursor: default;
-    }
-
-    #lightbox-caption {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,0.85);
-      font-size: 0.85rem;
-      text-align: center;
-      pointer-events: none;
-    }
-
-    #lightbox-close {
-      position: fixed;
-      top: 1.25rem;
-      right: 1.5rem;
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.7);
-      font-size: 1.75rem;
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    .lightbox-arrow {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255,255,255,0.15);
-      border: none;
-      color: #fff;
-      font-size: 2rem;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.15s;
-      z-index: 1001;
-    }
-
-    .lightbox-arrow:hover { background: rgba(255,255,255,0.3); }
-    #lightbox-prev { left: 1.25rem; }
-    #lightbox-next { right: 1.25rem; }
-  </style>
-</head>
-<body>
-
-  <header>
-    <div>
-      <h1>Dr Eel's Postcard Collection</h1>
-    </div>
-    <a href="about.html" class="about-link">🏠 About</a>
-  </header>
-
-  <div class="nav" id="nav-bar">
-    <button class="back-btn hidden" id="back-btn" onclick="showHome()">← All themes</button>
-    <span id="nav-label"></span>
-  </div>
-
-  <div id="loading">Loading postcards…</div>
-
-  <!-- Lightbox -->
-  <div id="lightbox" onclick="closeLightbox()">
-    <button id="lightbox-close" onclick="closeLightbox()">✕</button>
-    <button class="lightbox-arrow" id="lightbox-prev" onclick="event.stopPropagation(); navigateLightbox(-1)">‹</button>
-    <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
-    <button class="lightbox-arrow" id="lightbox-next" onclick="event.stopPropagation(); navigateLightbox(1)">›</button>
-    <div id="lightbox-caption"></div>
-  </div>
-
-  <div id="home-view" class="hidden"></div>
-  <div id="theme-view" class="hidden"></div>
-
-  <script>
-    let allPostcards = [];
-
-    // Theme display config — add an emoji and description for each theme name
-    const themeConfig = {
-      "Frogs":      { emoji: "🐸", description: "Frogs from around the world" },
-      "Pokémon":         { svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="48" fill="#fff" stroke="#222" stroke-width="4"/>
-        <path d="M2 50 Q2 2 50 2 Q98 2 98 50Z" fill="#e53935"/>
-        <rect x="2" y="47" width="96" height="6" fill="#222"/>
-        <circle cx="50" cy="50" r="14" fill="#fff" stroke="#222" stroke-width="4"/>
-        <circle cx="50" cy="50" r="7" fill="#fff" stroke="#222" stroke-width="3"/>
-      </svg>`, description: "Gotta collect 'em all" },
-      "Mushrooms": { emoji: "🍄", description: "Fungi from around the world" },
-    };
-
-    function themeIcon(name) {
-      if (themeConfig[name] && themeConfig[name].svg) {
-        return `<div class="pokeball">${themeConfig[name].svg}</div>`;
-      }
-      return `<span class="theme-emoji">${themeConfig[name] ? themeConfig[name].emoji : "📬"}</span>`;
-    }
-
-    // ── Render home screen ──
-    function showHome() {
-      document.getElementById('theme-view').classList.add('hidden');
-      document.getElementById('home-view').classList.remove('hidden');
-      document.getElementById('back-btn').classList.add('hidden');
-      document.getElementById('nav-label').textContent = "";
-      document.title = "Dr Eel's Postcard Collection";
-    }
-
-    function buildHome() {
-      const themes = [...new Set(allPostcards.map(p => p.theme))];
-      const homeView = document.getElementById('home-view');
-
-      homeView.innerHTML = themes.map(theme => {
-        const count = allPostcards.filter(p => p.theme === theme).length;
-        return `
-          <div class="theme-box" onclick="showTheme('${theme.replace(/'/g, "\\'")}')">
-            ${themeIcon(theme)}
-            <div class="theme-name">${theme}</div>
-            <div class="theme-count">${count} postcard${count !== 1 ? 's' : ''}</div>
-          </div>`;
-      }).join('');
-    }
-
-    // ── Render theme screen ──
-    function showTheme(theme) {
-      const filtered = allPostcards.filter(p => p.theme === theme);
-      currentThemeCards = filtered;
-
-      document.getElementById('home-view').classList.add('hidden');
-      document.getElementById('theme-view').classList.remove('hidden');
-      document.getElementById('back-btn').classList.remove('hidden');
-      document.getElementById('nav-label').textContent = theme;
-      document.title = `${theme} — Dr Eel's Postcard Collection`;
-
-      const themeView = document.getElementById('theme-view');
-
-      if (filtered.length === 0) {
-        themeView.innerHTML = '<p class="empty-msg">No postcards in this theme yet.</p>';
-        return;
-      }
-
-      themeView.innerHTML = filtered.map((p, i) => `
-        <div class="card" onclick="openLightbox('${p.image.replace(/'/g, "\\'")}', '${p.title.replace(/'/g, "\\'")}', '${(p.year || '').replace(/'/g, "\\'")}', ${i}, '${theme}')">
-          <img src="${p.image}" alt="${p.title}" loading="lazy">
-          ${theme === 'Frogs' ? '' : `<div class="card-body">
-            <div class="card-title">${p.title}</div>
-            <div class="card-meta">${p.year || ''}</div>
-          </div>`}
-        </div>`).join('');
-    }
-
-    // ── Lightbox ──
-    let currentThemeCards = [];
-    let currentCardIndex = 0;
-    let currentTheme = '';
-
-    function openLightbox(src, title, year, index, theme) {
-      currentCardIndex = index;
-      currentTheme = theme;
-      showLightboxCard(currentCardIndex);
-      document.getElementById('lightbox').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function showLightboxCard(index) {
-      const p = currentThemeCards[index];
-      document.getElementById('lightbox-img').src = p.image;
-      document.getElementById('lightbox-img').alt = p.title;
-      const isFrogs = currentTheme === 'Frogs';
-      document.getElementById('lightbox-caption').textContent = isFrogs ? '' : (p.year ? `${p.title} — ${p.year}` : p.title);
-    }
-
-    function navigateLightbox(direction) {
-      currentCardIndex = (currentCardIndex + direction + currentThemeCards.length) % currentThemeCards.length;
-      showLightboxCard(currentCardIndex);
-    }
-
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('open');
-      document.getElementById('lightbox-img').src = '';
-      document.body.style.overflow = '';
-    }
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') navigateLightbox(1);
-      if (e.key === 'ArrowLeft') navigateLightbox(-1);
-    });
-
-    // ── Load data ──
-    fetch('postcards.json')
-      .then(r => r.json())
-      .then(data => {
-        allPostcards = data;
-        document.getElementById('loading').classList.add('hidden');
-        buildHome();
-        // Check if a theme was requested via URL hash
-        const hash = decodeURIComponent(window.location.hash.slice(1));
-        if (hash && allPostcards.some(p => p.theme === hash)) {
-          showTheme(hash);
-        } else {
-          showHome();
-        }
-      })
-      .catch(() => {
-        document.getElementById('loading').textContent =
-          "Couldn't load postcards.json — make sure the file exists in your repository.";
-      });
-  </script>
-
-</body>
-</html>
+[
+    {
+    "title": "Carp Streamer (Children's Day)",
+    "theme": "Pokémon",
+    "year": "1998",
+    "image": "images/banpresto96.jpg"
+  },
+    {
+    "title": "Fudin (Alakazam)",
+    "theme": "Pokémon",
+    "year": "1998",
+    "image": "images/fudin.jpg"
+  },
+     {
+    "title": "Pikachu & Friends - Merry Christmas",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/paf-merry-christmas.jpg"
+  },
+    {
+    "title": "Pikachu & Friends - Happy New Year 1999",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/paf-hny.jpg"
+  },
+    {
+    "title": "Pikachu & Friends - Happy New Year 1999",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/paf-hny-2.jpg"
+  },
+        {
+    "title": "Pikachu & Friends - Happy New Year 1999",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/paf-hny-3.jpg"
+  },
+        {
+    "title": "Let's Dance 5",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/lets-dance-5.jpg"
+  },
+  {
+    "title": "Let's Dance 11",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/lets-dance-11.jpg"
+  },
+  {
+    "title": "Let's Dance 12",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/lets-dance-12.jpg"
+  },
+    {
+    "title": "Let's Dance 14",
+    "theme": "Pokémon",
+    "year": "1999",
+    "image": "images/lets-dance-14.jpg"
+  },
+    {
+    "title": "Blastoise",
+    "theme": "Pokémon",
+    "year": "2000",
+    "image": "images/blastoise.jpg"
+  },
+  {
+    "title": "Gengar",
+    "theme": "Pokémon",
+    "year": "2000",
+    "image": "images/gengar.jpg"
+  },
+  {
+    "title": "Ditto",
+    "theme": "Pokémon",
+    "year": "2000",
+    "image": "images/ditto.jpg"
+  },
+  {
+    "title": "Jirachi Wish Maker Movie Promotion",
+    "theme": "Pokémon",
+    "year": "2003",
+    "image": "images/jirachi-wish-maker-movie-promotion-1.jpg"
+  },
+  {
+    "title": "Jirachi Wish Maker Movie Promotion",
+    "theme": "Pokémon",
+    "year": "2003",
+    "image": "images/jirachi-wish-maker-movie-promotion-2.jpg"
+  },
+    {
+    "title": "Pokémon Peace Jet ANA",
+    "theme": "Pokémon",
+    "year": "2011",
+    "image": "images/pokemon-peace-jet-ana.jpg"
+  },
+     {
+    "title": "Eevee - Happy Party Time",
+    "theme": "Pokémon",
+    "year": "2013",
+    "image": "images/hpt2013.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2016",
+    "image": "images/pco2016.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2017",
+    "image": "images/pco2017.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2018",
+    "image": "images/pco2018.jpg"
+  },
+     {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2018",
+    "image": "images/pco20182.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2019",
+    "image": "images/pco2019.jpg"
+  },
+    {
+    "title": "Pokémon Center Online",
+    "theme": "Pokémon",
+    "year": "2021",
+    "image": "images/pco2021.jpg"
+  },
+    {
+    "title": "London World Championship 2022",
+    "theme": "Pokémon",
+    "year": "2022",
+    "image": "images/london2022.jpg"
+  },
+  {
+    "title": "Pokémon Center × Van Gogh Museum",
+    "theme": "Pokémon",
+    "year": "2023",
+    "image": "images/vg1.jpg"
+  },
+  {
+    "title": "Pokémon Center × Van Gogh Museum",
+    "theme": "Pokémon",
+    "year": "2023",
+    "image": "images/vg2.jpg"
+  },
+  {
+    "title": "Pokémon Center × Van Gogh Museum",
+    "theme": "Pokémon",
+    "year": "2023",
+    "image": "images/vg3.jpg"
+  },
+  {
+    "title": "Pokémon Center × Van Gogh Museum",
+    "theme": "Pokémon",
+    "year": "2023",
+    "image": "images/vg4.jpg"
+  },
+  {
+    "title": "Pokémon Center × Van Gogh Museum",
+    "theme": "Pokémon",
+    "year": "2023",
+    "image": "images/vg5.jpg"
+  },
+  {
+    "title": "Pokémon Center × Van Gogh Museum",
+    "theme": "Pokémon",
+    "year": "2023",
+    "image": "images/vg6.jpg"
+  },
+  {
+    "title": "Pokopia Launch",
+    "theme": "Pokémon",
+    "year": "2025",
+    "image": "images/pokopia-launch.jpg"
+  },
+  {
+    "title": "Pokémon Astronomical Observatory Event",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/pokemon-astronomical-observatory-1.jpg"
+  },
+  {
+    "title": "Pokémon Astronomical Observatory Event",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/pokemon-astronomical-observatory-2.jpg"
+  },
+  {
+    "title": "Seasonal Situations (October)",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/seasonal-situations-2026.jpg"
+  },
+  {
+    "title": "Year of the Horse",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/year-of-the-horse-2026.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm1.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm2.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm3.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm4e.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm5.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm6.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm7.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm8.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm9.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm10.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm11.jpg"
+  },
+  {
+    "title": "Pokémon Center × Natural History Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/nhm12.jpg"
+  },
+    {
+    "title": "Pokémon Fossil Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/fossil-museum-1.jpg"
+  },
+    {
+    "title": "Pokémon Fossil Museum",
+    "theme": "Pokémon",
+    "year": "2026",
+    "image": "images/fossil-museum-2.jpg"
+  },
+  {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog23.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog25.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog26.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog27.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog28.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog29.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog30.jpg"
+  },
+  {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog1.jpeg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog2.jpeg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog3.jpeg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog4.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog5.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog6.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog7.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog8.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog9.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog10.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog11.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog12.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog13.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog14.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog15.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog16.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog17.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog18.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog19.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog20.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog21.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog22.jpg"
+  },
+    {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog24.jpg"
+  },
+     {
+    "title": "Common Frog",
+    "theme": "Frogs",
+    "year": "2025",
+    "image": "images/frog31.jpg"
+  }
+]
