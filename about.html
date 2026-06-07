@@ -166,7 +166,20 @@
 
     .dot { color: var(--text-muted); font-size: 0.5rem; }
 
-    /* ── Postcrossing badge ── */
+    /* ── Eel footer ── */
+    .eel-footer {
+      width: 100%;
+      padding: 2rem 0 0;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    .eel-footer img {
+      height: 120px;
+      width: auto;
+      display: inline-block;
+      opacity: 0.7;
+    }
     .pc-row {
       text-align: center;
       padding-bottom: 3rem;
@@ -224,6 +237,20 @@
       🌍 Find me on Postcrossing
     </a>
   </div>
+
+  <div class="eel-footer" id="eel-footer"></div>
+
+  <script>
+    // Fill the footer with repeating garden eels
+    const footer = document.getElementById('eel-footer');
+    const eelCount = Math.ceil(window.innerWidth / 80) + 2;
+    for (let i = 0; i < eelCount; i++) {
+      const img = document.createElement('img');
+      img.src = 'garden-eel.webp';
+      img.alt = '';
+      footer.appendChild(img);
+    }
+  </script>
 
 </body>
 </html>
