@@ -338,21 +338,23 @@
       }
 
       themeView.innerHTML = filtered.map((p, i) => `
-        <div class="card" onclick="openLightbox('${p.image.replace(/'/g, "\\'")}', '${p.title.replace(/'/g, "\\'")}', '${(p.year || '').replace(/'/g, "\\'")}', ${i})">
+        <div class="card" onclick="openLightbox('${p.image.replace(/'/g, "\\'")}', '${p.title.replace(/'/g, "\\'")}', '${(p.year || '').replace(/'/g, "\\'")}', ${i}, '${theme}')">
           <img src="${p.image}" alt="${p.title}" loading="lazy">
-          <div class="card-body">
+          ${theme === 'Frogs' ? '' : `<div class="card-body">
             <div class="card-title">${p.title}</div>
             <div class="card-meta">${p.year || ''}</div>
-          </div>
+          </div>`}
         </div>`).join('');
     }
 
     // ── Lightbox ──
     let currentThemeCards = [];
     let currentCardIndex = 0;
+    let currentTheme = '';
 
-    function openLightbox(src, title, year, index) {
+    function openLightbox(src, title, year, index, theme) {
       currentCardIndex = index;
+      currentTheme = theme;
       showLightboxCard(currentCardIndex);
       document.getElementById('lightbox').classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -362,7 +364,8 @@
       const p = currentThemeCards[index];
       document.getElementById('lightbox-img').src = p.image;
       document.getElementById('lightbox-img').alt = p.title;
-      document.getElementById('lightbox-caption').textContent = p.year ? `${p.title} — ${p.year}` : p.title;
+      const isFrogs = currentTheme === 'Frogs';
+      document.getElementById('lightbox-caption').textContent = isFrogs ? '' : (p.year ? `${p.title} — ${p.year}` : p.title);
     }
 
     function navigateLightbox(direction) {
